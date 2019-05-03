@@ -2,42 +2,62 @@ var db = require('../db');
 
 module.exports = {
   messages: {
-    get: function (successCB, errorCB = null) {
-      $.ajax({
-        url: Parse.server,
-        type: 'GET',
-        data: { order: '-createdAt' },
-        contentType: 'application/json',
-        success: successCB,
-        error: errorCB || function (error) {
-          console.error('chatterbox: Failed to fetch messages', error);
+    get: function (callback) {
+      // console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
+      var queryStr = 'select * from messages';
+      db.query(queryStr, (err, results) => {
+        if (err) {
+          throw 'Unsuccessful get messages query';
         }
+        callback(err, results);
       });
-    }, // a function which produces all the messages
+    },
 
-    post: function (message, successCB, errorCB = null) {
-      // todo: save a message to the server
-      $.ajax({
-        // This is the url you should use to communicate with the parse API server.
-        url: Parse.server,
-        type: 'POST',
-        data: JSON.stringify(message),
-        contentType: 'application/json',
-        success: function (data) {
-          console.log('chatterbox: Message sent');
-        },
-        error: function (data) {
-          // See: https://developer.mozilla.org/en-US/docs/Web/API/console.error
-          console.error('chatterbox: Failed to send message', data);
-        }
+    post: function (params, callback) {
+      // console.log('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa');
+      var queryStr = 'INSERT INTO messages (userid) VALUES (?)';
+      db.query(queryStr, params, (err, results) => {
+        // if (err) {
+        //   throw 'Unsuccessful post messages query';
+        // }
+        // db.connection.query('SELECT * FROM messages', (err, data) => {
+        //   console.log(data);
+        //   callback(data);
+        // });
+        callback(err, results);
+
       });
-    } // a function which can be used to insert a message into the database
+    },
   },
 
   users: {
     // Ditto as above.
-    get: function () { },
-    post: function () { }
+    get: function (callback) {
+      var queryStr = 'select * from users';
+      db.query(queryStr, (err, results) => {
+        if (err) {
+          throw 'Unsuccessful query get users';
+        }
+        callback(err, results);
+      });
+    },
+    post: function (params, callback) {
+      console.log('params', params);
+      var queryStr = `INSERT INTO users(username) VALUES ('${params}')`;
+      db.query(`INSERT INTO users(username) VALUES ('${params}')`, (err, results) => {
+        // if (err) {
+        //   console.log('param after', results);
+        //   // console.log(err);
+        //   throw 'Unsuccessful query post users';
+        // }
+        // db.query('SELECT * FROM messages', (err, data) => {
+        //   console.log(data);
+        //   callback(data);
+        // });
+        callback(err, results);
+
+      });
+    },
   }
 };
 

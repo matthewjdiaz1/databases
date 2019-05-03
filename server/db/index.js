@@ -1,6 +1,6 @@
 var mysql = require('mysql');
 var connection = mysql.createConnection({
-  host: 'example.org',
+  host: 'localhost',
   user: 'student',
   password: 'student'
 });
@@ -16,4 +16,4 @@ connection.connect(function (err) {
 // You will need to connect with the user "root", no password,
 // and to the database "chat".
 
-
+module.exports = connection;
